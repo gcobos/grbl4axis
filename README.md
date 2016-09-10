@@ -3,6 +3,17 @@
 
 ***
 
+To get the original grbl firmware, go to: https://github.com/grbl/grbl
+
+This tweak works by disabling VARIABLE SPINDLE feature and adding a fourth axis "E" on the digital pins 12 and 13
+
+#define E_STEP_BIT      12    // Uno Digital Pin 12 in PORTB (SPINDLE ENABLE)
+#define E_DIRECTION_BIT   13  // Uno Digital Pin 13 in PORTB (SPINDLE DIRECTION)
+
+(Only tested with the arduino pro mini "atmega328p")
+
+***
+
 Grbl is a no-compromise, high performance, low cost alternative to parallel-port-based motion control for CNC milling. It will run on a vanilla Arduino (Duemillanove/Uno) as long as it sports an Atmega 328. 
 
 The controller is written in highly optimized C utilizing every clever feature of the AVR-chips to achieve precise timing and asynchronous operation. It is able to maintain up to 30kHz of stable, jitter free control pulses.
