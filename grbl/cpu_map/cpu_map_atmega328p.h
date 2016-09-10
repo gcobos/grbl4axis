@@ -39,7 +39,8 @@
 #define X_STEP_BIT      2  // Uno Digital Pin 2
 #define Y_STEP_BIT      3  // Uno Digital Pin 3
 #define Z_STEP_BIT      4  // Uno Digital Pin 4
-#define STEP_MASK       ((1<<X_STEP_BIT)|(1<<Y_STEP_BIT)|(1<<Z_STEP_BIT)) // All step bits
+#define E_STEP_BIT      12  // Uno Digital Pin 12 in PORTB (SPINDLE ENABLE)
+#define STEP_MASK       ((1<<X_STEP_BIT)|(1<<Y_STEP_BIT)|(1<<Z_STEP_BIT)|(1<<E_STEP_BIT)) // All step bits
 
 // Define step direction output pins. NOTE: All direction pins must be on the same port.
 #define DIRECTION_DDR     DDRD
@@ -47,7 +48,8 @@
 #define X_DIRECTION_BIT   5  // Uno Digital Pin 5
 #define Y_DIRECTION_BIT   6  // Uno Digital Pin 6
 #define Z_DIRECTION_BIT   7  // Uno Digital Pin 7
-#define DIRECTION_MASK    ((1<<X_DIRECTION_BIT)|(1<<Y_DIRECTION_BIT)|(1<<Z_DIRECTION_BIT)) // All direction bits
+#define E_DIRECTION_BIT   13  // Uno Digital Pin 13 in PORTB (SPINDLE DIRECTION)
+#define DIRECTION_MASK    ((1<<X_DIRECTION_BIT)|(1<<Y_DIRECTION_BIT)|(1<<Z_DIRECTION_BIT)|(1<<E_DIRECTION_BIT)) // All direction bits
 
 // Define stepper driver enable/disable output pin.
 #define STEPPERS_DISABLE_DDR    DDRB
@@ -103,6 +105,12 @@
   #define COOLANT_MIST_PORT  PORTC
   #define COOLANT_MIST_BIT   4 // Uno Analog Pin 4
 #endif  
+
+//  Define pins for HEATER and TEMP SENSOR
+#define HEATER_0_PIN        6   // Uses analog pin 6 as HEATER ENABLE PIN
+#define TEMP_SENSOR_0_PIN   7   // Uses analog pin 6 as HEATER ENABLE PIN
+
+
 
 // Define user-control controls (cycle start, reset, feed hold) input pins.
 // NOTE: All CONTROLs pins must be on the same port and not on a port with other input pins (limits).

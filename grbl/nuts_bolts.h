@@ -26,11 +26,11 @@
 #define true 1
 
 // Axis array index values. Must start with 0 and be continuous.
-#define N_AXIS 3 // Number of axes
+#define N_AXIS 4 // Number of axes
 #define X_AXIS 0 // Axis indexing value. 
 #define Y_AXIS 1
 #define Z_AXIS 2
-// #define A_AXIS 3
+#define E_AXIS 3
 
 // CoreXY motor assignments. DO NOT ALTER.
 // NOTE: If the A and B motor axis bindings are changed, this effects the CoreXY equations.
@@ -60,6 +60,20 @@
 #define bit_false(x,mask) (x) &= ~(mask)
 #define bit_istrue(x,mask) ((x & mask) != 0)
 #define bit_isfalse(x,mask) ((x & mask) == 0)
+
+// Combine PORTD & PORTB in a single register
+#define set_pins(pins) { \
+    PORTD = (PORTD & (~((STEP_MASK|DIRECTION_MASK)&0xFF))) | (pins&0xFF); \
+    PORTB = (PORTB & (~((STEP_MASK|DIRECTION_MASK)>>8)))  | (pins>>8);   \
+}
+
+// Combine DDRD & DDRB in a single register
+#define setup_pins(pins) { \
+    DDRD |= pins&0xFF;     \
+    DDRB |= pins>>8;       \
+}
+    
+
 
 // Read a floating point value from a string. Line points to the input buffer, char_counter 
 // is the indexer pointing to the current character of the line, while float_ptr is 

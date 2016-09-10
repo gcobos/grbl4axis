@@ -246,6 +246,7 @@ void report_grbl_settings() {
           case X_AXIS: printPgmString(PSTR("x")); break;
           case Y_AXIS: printPgmString(PSTR("y")); break;
           case Z_AXIS: printPgmString(PSTR("z")); break;
+          case E_AXIS: printPgmString(PSTR("e")); break;
         }
         switch (set_idx) {
           case 0: printPgmString(PSTR(", step/mm")); break;
@@ -454,7 +455,7 @@ void report_realtime_status()
       if (idx < (N_AXIS-1)) { printPgmString(PSTR(",")); }
     }
   }
-  
+
   // Report work position
   if (bit_istrue(settings.status_report_mask,BITFLAG_RT_STATUS_WORK_POSITION)) {
     printPgmString(PSTR(",WPos:")); 
@@ -466,7 +467,7 @@ void report_realtime_status()
       if (idx < (N_AXIS-1)) { printPgmString(PSTR(",")); }
     }
   }
-        
+
   // Returns the number of active blocks are in the planner buffer.
   if (bit_istrue(settings.status_report_mask,BITFLAG_RT_STATUS_PLANNER_BUFFER)) {
     printPgmString(PSTR(",Buf:"));

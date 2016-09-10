@@ -40,12 +40,14 @@
 
 // Define the Grbl system include files. NOTE: Do not alter organization.
 #include "config.h"
+//#include "macros.h"
 #include "nuts_bolts.h"
 #include "settings.h"
 #include "system.h"
 #include "defaults.h"
 #include "cpu_map.h"
 #include "coolant_control.h"
+//#include "temperature.h"
 #include "eeprom.h"
 #include "gcode.h"
 #include "limits.h"

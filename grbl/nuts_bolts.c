@@ -141,3 +141,4 @@ void delay_us(uint32_t us)
 
 // Simple hypotenuse computation function.
 float hypot_f(float x, float y) { return(sqrt(x*x + y*y)); }
+
