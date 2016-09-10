@@ -72,6 +72,7 @@ typedef struct {
   uint8_t abort;                 // System abort flag. Forces exit back to main loop for reset.
   uint8_t state;                 // Tracks the current state of Grbl.
   uint8_t suspend;               // System suspend bitflag variable that manages holds, cancels, and safety door.
+  uint8_t soft_limit;            // Tracks soft limit errors for the state machine. (boolean)
   
   int32_t position[N_AXIS];      // Real-time machine (aka home) position vector in steps. 
                                  // NOTE: This may need to be a volatile variable, if problems arise.                             
@@ -104,5 +105,11 @@ float system_convert_axis_steps_to_mpos(int32_t *steps, uint8_t idx);
 
 // Updates a machine 'position' array based on the 'step' array sent.
 void system_convert_array_steps_to_mpos(float *position, int32_t *steps);
+
+// CoreXY calculation only. Returns x or y-axis "steps" based on CoreXY motor steps.
+#ifdef COREXY
+  int32_t system_convert_corexy_to_x_axis_steps(int32_t *steps);
+  int32_t system_convert_corexy_to_y_axis_steps(int32_t *steps);
+#endif
 
 #endif

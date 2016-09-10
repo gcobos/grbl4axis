@@ -200,7 +200,7 @@ static void planner_recalculate()
 
 void plan_reset() 
 {
-  memset(&pl, 0, sizeof(pl)); // Clear planner struct
+  memset(&pl, 0, sizeof(planner_t)); // Clear planner struct
   block_buffer_tail = 0;
   block_buffer_head = 0; // Empty = tail
   next_buffer_head = 1; // plan_next_block_index(block_buffer_head)
@@ -292,9 +292,9 @@ uint8_t plan_check_full_buffer()
       }
       block->step_event_count = max(block->step_event_count, block->steps[idx]);
       if (idx == A_MOTOR) {
-        delta_mm = ((target_steps[X_AXIS]-pl.position[X_AXIS]) + (target_steps[Y_AXIS]-pl.position[Y_AXIS]))/settings.steps_per_mm[idx];
+        delta_mm = (target_steps[X_AXIS]-pl.position[X_AXIS] + target_steps[Y_AXIS]-pl.position[Y_AXIS])/settings.steps_per_mm[idx];
       } else if (idx == B_MOTOR) {
-        delta_mm = ((target_steps[X_AXIS]-pl.position[X_AXIS]) - (target_steps[Y_AXIS]-pl.position[Y_AXIS]))/settings.steps_per_mm[idx];
+        delta_mm = (target_steps[X_AXIS]-pl.position[X_AXIS] - target_steps[Y_AXIS]+pl.position[Y_AXIS])/settings.steps_per_mm[idx];
       } else {
         delta_mm = (target_steps[idx] - pl.position[idx])/settings.steps_per_mm[idx];
       }
@@ -424,10 +424,10 @@ void plan_sync_position()
   uint8_t idx;
   for (idx=0; idx<N_AXIS; idx++) {
     #ifdef COREXY
-     if (idx==A_MOTOR) { 
-        pl.position[idx] = (sys.position[A_MOTOR] + sys.position[B_MOTOR])/2;
-      } else if (idx==B_MOTOR) { 
-        pl.position[idx] = (sys.position[A_MOTOR] - sys.position[B_MOTOR])/2;
+     if (idx==X_AXIS) { 
+        pl.position[X_AXIS] = system_convert_corexy_to_x_axis_steps(sys.position);
+      } else if (idx==Y_AXIS) { 
+        pl.position[Y_AXIS] = system_convert_corexy_to_y_axis_steps(sys.position);
       } else {
         pl.position[idx] = sys.position[idx];
       }

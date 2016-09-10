@@ -50,17 +50,17 @@ void spindle_stop()
     TCCRA_REGISTER &= ~(1<<COMB_BIT); // Disable PWM. Output voltage is zero.
     #if defined(CPU_MAP_ATMEGA2560) || defined(USE_SPINDLE_DIR_AS_ENABLE_PIN)
       #ifdef INVERT_SPINDLE_ENABLE_PIN
-		SPINDLE_ENABLE_PORT |= (1<<SPINDLE_ENABLE_BIT);  // Set pin to high
-	  #else
-		SPINDLE_ENABLE_PORT &= ~(1<<SPINDLE_ENABLE_BIT); // Set pin to low
-	  #endif
+        SPINDLE_ENABLE_PORT |= (1<<SPINDLE_ENABLE_BIT);  // Set pin to high
+      #else
+        SPINDLE_ENABLE_PORT &= ~(1<<SPINDLE_ENABLE_BIT); // Set pin to low
+      #endif
     #endif
   #else
     #ifdef INVERT_SPINDLE_ENABLE_PIN
-	  SPINDLE_ENABLE_PORT |= (1<<SPINDLE_ENABLE_BIT);  // Set pin to high
-	#else
-	  SPINDLE_ENABLE_PORT &= ~(1<<SPINDLE_ENABLE_BIT); // Set pin to low
-	#endif
+      SPINDLE_ENABLE_PORT |= (1<<SPINDLE_ENABLE_BIT);  // Set pin to high
+    #else
+      SPINDLE_ENABLE_PORT &= ~(1<<SPINDLE_ENABLE_BIT); // Set pin to low
+    #endif
   #endif  
 }
 
@@ -95,33 +95,38 @@ void spindle_set_state(uint8_t state, float rpm)
         uint8_t current_pwm;
       #endif
 
-      #define SPINDLE_RPM_RANGE (SPINDLE_MAX_RPM-SPINDLE_MIN_RPM)
-      if ( rpm < SPINDLE_MIN_RPM ) { rpm = 0; } 
-      else { 
-        rpm -= SPINDLE_MIN_RPM; 
-        if ( rpm > SPINDLE_RPM_RANGE ) { rpm = SPINDLE_RPM_RANGE; } // Prevent integer overflow
-      }
-      current_pwm = floor( rpm*(PWM_MAX_VALUE/SPINDLE_RPM_RANGE) + 0.5);
-      #ifdef MINIMUM_SPINDLE_PWM
-        if (current_pwm < MINIMUM_SPINDLE_PWM) { current_pwm = MINIMUM_SPINDLE_PWM; }
-      #endif
-      OCR_REGISTER = current_pwm; // Set PWM pin output
-    
-      // On the Uno, spindle enable and PWM are shared, unless otherwise specified.
-      #if defined(CPU_MAP_ATMEGA2560) || defined(USE_SPINDLE_DIR_AS_ENABLE_PIN) 
-        #ifdef INVERT_SPINDLE_ENABLE_PIN
-          SPINDLE_ENABLE_PORT &= ~(1<<SPINDLE_ENABLE_BIT);
-        #else
-          SPINDLE_ENABLE_PORT |= (1<<SPINDLE_ENABLE_BIT);
+      if (rpm <= 0.0) { spindle_stop(); } // RPM should never be negative, but check anyway.
+      else {
+        #define SPINDLE_RPM_RANGE (SPINDLE_MAX_RPM-SPINDLE_MIN_RPM)
+        if ( rpm < SPINDLE_MIN_RPM ) { rpm = 0; } 
+        else { 
+          rpm -= SPINDLE_MIN_RPM; 
+          if ( rpm > SPINDLE_RPM_RANGE ) { rpm = SPINDLE_RPM_RANGE; } // Prevent integer overflow
+        }
+        current_pwm = floor( rpm*(PWM_MAX_VALUE/SPINDLE_RPM_RANGE) + 0.5);
+        #ifdef MINIMUM_SPINDLE_PWM
+          if (current_pwm < MINIMUM_SPINDLE_PWM) { current_pwm = MINIMUM_SPINDLE_PWM; }
         #endif
-      #endif
+        OCR_REGISTER = current_pwm; // Set PWM pin output
+    
+        // On the Uno, spindle enable and PWM are shared, unless otherwise specified.
+        #if defined(CPU_MAP_ATMEGA2560) || defined(USE_SPINDLE_DIR_AS_ENABLE_PIN) 
+          #ifdef INVERT_SPINDLE_ENABLE_PIN
+            SPINDLE_ENABLE_PORT &= ~(1<<SPINDLE_ENABLE_BIT);
+          #else
+            SPINDLE_ENABLE_PORT |= (1<<SPINDLE_ENABLE_BIT);
+          #endif
+        #endif
+      }
       
-    #else   
+    #else
+      // NOTE: Without variable spindle, the enable bit should just turn on or off, regardless
+      // if the spindle speed value is zero, as its ignored anyhow.      
       #ifdef INVERT_SPINDLE_ENABLE_PIN
-		SPINDLE_ENABLE_PORT &= ~(1<<SPINDLE_ENABLE_BIT);
-	  #else
-		SPINDLE_ENABLE_PORT |= (1<<SPINDLE_ENABLE_BIT);
-	  #endif
+        SPINDLE_ENABLE_PORT &= ~(1<<SPINDLE_ENABLE_BIT);
+      #else
+        SPINDLE_ENABLE_PORT |= (1<<SPINDLE_ENABLE_BIT);
+      #endif
     #endif
 
   }
