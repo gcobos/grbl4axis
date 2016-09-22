@@ -1,3 +1,19 @@
+***
+
+
+This is a fork of grbl. To get the original firmware, go to: https://github.com/grbl/grbl
+
+This is a custom modification to grbl, to allow a fourth axis for 3D printing purposes.
+
+It works by disabling VARIABLE SPINDLE feature and adding a fourth axis "E" on the digital pins 12 and 13
+
+ #define E_STEP_BIT      12    // Uno Digital Pin 12 in PORTB (SPINDLE ENABLE)
+ 
+ #define E_DIRECTION_BIT   13  // Uno Digital Pin 13 in PORTB (SPINDLE DIRECTION)
+
+(Only tested with the arduino pro mini "atmega328p")
+
+
 ![GitHub Logo](/doc/media/Grbl Logo 250px.png)
 
 
